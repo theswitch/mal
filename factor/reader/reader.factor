@@ -1,6 +1,6 @@
 ! Copyright (C) 2015 theswitch
 
-USING: kernel peg peg.parsers strings sequences ;
+USING: kernel peg peg.parsers strings strings.parser sequences make ;
 IN: mal.reader
 
 DEFER: read-form
@@ -14,5 +14,13 @@ DEFER: read-form
     "a-z+*" range-pattern repeat1 [ >string ] action
     2choice ;
 
+: read-string ( -- parser )
+    [
+        [ CHAR: " = ] satisfy hide ,
+        [ CHAR: \ = ] satisfy hide any-char 2seq [ first escape ] action
+        [ CHAR: " = not ] satisfy 2choice repeat0 ,
+        [ CHAR: " = ] satisfy hide ,
+    ] seq* [ first >string ] action ;
+
 : read-form ( -- parser )
-    [ read-atom read-list 2choice sp ] delay ;
+    [ read-string read-atom read-list 3choice sp ] delay ;
