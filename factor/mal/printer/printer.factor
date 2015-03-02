@@ -1,15 +1,17 @@
 ! Copyright (C) 2015 theswitch
 
-USING: kernel vectors math math.parser strings sequences combinators ;
+USING: kernel vectors math math.parser strings sequences
+       combinators prettyprint pairs accessors mal.reader ;
 IN: mal.printer
 
 : str-form ( mal -- str )
     {
-        { [ dup number? ] [ number>string ] }
-        { [ dup string? ] [ ] }
-        { [ dup vector? ]
+        { [ dup key>> integer-t = ] [ value>> number>string ] }
+        { [ dup key>> string-t = ]  [ value>> unparse ] }
+        { [ dup key>> atom-t = ]    [ value>> ] }
+        { [ dup key>> list-t = ]
             [
-                [ str-form ] map " " join
+                value>> [ str-form ] map " " join
                 "(" ")" surround
             ]
         }
