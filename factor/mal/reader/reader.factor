@@ -12,7 +12,7 @@ SYMBOLS: list-t integer-t atom-t string-t ;
     "(" ")" surrounded-by ;
 
 : read-atom ( -- parser )
-    "a-z+*" range-pattern repeat1 [ >string ] action ;
+    "a-z+*/-" range-pattern repeat1 [ >string ] action ;
 
 : read-integer ( -- parser ) 'integer' ;
 
